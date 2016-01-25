@@ -1,0 +1,37 @@
+# Defines which nodes are used in the system and how to connect to them.
+# This element should only be referenced during the constructor's initial
+# setup.
+# All names must be unique.
+# No other nodes are known.
+# These names will be used for src and dest addresses for the Message
+# The local node’s name is included in this list
+configuration :
+- name : alice
+  ip   : 127.0.0.1
+  port : 12344
+- name : bob
+  ip   : 127.0.0.1
+  port : 14255
+- name : charlie
+  ip   : 128.2.130.19
+  port : 12998
+- name : daphnie
+  ip   : 192.168.1.87
+  port : 1987
+# This is the incoming port on which MP will listen
+# May be changed for further communication as usual
+sendRules :
+  - action : drop # Ack message number 4 from bob to alice will not be sent
+    src    : bob
+    dest   : alice
+    kind   : Ack
+    seqNum : 4
+  - action : dropAfter # Daphnie will stop sending Reply messages after seq#6
+    kind   : Reply
+    src    : daphnie
+    seqNum : 6
+receiveRules :
+  - action : delay
+src : charlie
+# Everyone sees two copies of charlie's messages
+# even though he only sends one
