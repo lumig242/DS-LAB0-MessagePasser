@@ -23,6 +23,7 @@ public class ConfigParser {
 	private List<Rule> receiveRules = new ArrayList<>();
 	private String filename;
 	
+	@SuppressWarnings("unchecked")
 	public ConfigParser(String filename){
 		this.filename = filename;
 		Yaml yaml = new Yaml();
@@ -42,6 +43,14 @@ public class ConfigParser {
 		//System.out.println(servers);
 		//System.out.println(sendRules);
 		//System.out.println(receiveRules);
+	}
+	
+	/**
+	 * To be finished
+	 * Reconfiguration schema needed 
+	 */
+	public void Reconfiguration(){
+		
 	}
 	
 	public Server getServer(String serverName){

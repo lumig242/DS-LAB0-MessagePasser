@@ -23,6 +23,7 @@ public class MessagePasser {
 		localServer = config.getServer(local_name);
 		
 		// Start the thread to keep listening on port
+		// Start separate thread for all the clients coonected
 		Thread t = new Thread(new Runnable() {	
 			@SuppressWarnings("resource")
 			@Override
@@ -34,10 +35,21 @@ public class MessagePasser {
 					while(true){
 						// Client connected
 						client = server.accept();  
-						// Start a new thread to listen from the client
-						new Thread(new ServerThread(client, receiveMsgs, config)).start();
+						// Set the input output stream for this node
+			        	ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
+			        	ObjectInputStream input = new ObjectInputStream(client.getInputStream());
+			        	// We have to read the first message to get the name of client
+			        	Message msg =  (Message) input.readObject();
+			        	Server s = config.getServer(msg.getSource());
+			        	System.out.println("Connected client!  " + s);
+	                	s.setOutput(output);
+						s.setInput(input);
+						// Put the first message in the queue
+						receiveMsgs.put(msg);
+						// Start a new thread to listen from the node
+						new Thread(new ListenerThread(s, receiveMsgs)).start();
 					}
-				} catch (IOException e) {
+				} catch (IOException | ClassNotFoundException | InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
@@ -58,20 +70,23 @@ public class MessagePasser {
 	void send(Message message){
 		//message.set_seqNum(sequenceNumber++);
 		message.set_source(localServer.getName());
-		System.out.println("Sent: " + message);
+		//System.out.println("Sent: " + message);
 		Server destServer = config.getServer(message.getDest());
-		System.out.println("Destserver: " + destServer);
-		// if this is the first msg sent 
+		//System.out.println("Destserver: " + destServer);
+		
+		// if this is the first msg sent
+		// act as the client
 		if(destServer.getOutput() == null){
 			try {
+				System.out.println("Connect to Destserver: " + destServer);
+				@SuppressWarnings("resource")
 				Socket socket = new Socket(destServer.getIp(), destServer.getPort());
 				ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
 				ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
 				destServer.setInput(inputStream);
 				destServer.setOutput(outputStream);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				//System.out.println(e.toString());
+				new Thread(new ListenerThread(destServer, receiveMsgs)).start();
+			} catch (IOException e) {				
 				e.printStackTrace();
 			}
 		}

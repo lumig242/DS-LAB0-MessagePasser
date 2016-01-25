@@ -3,25 +3,76 @@ package lab0;
 public class TestClass {
 	public static void main(String[] args){
 		final MessagePasser mp1 = new MessagePasser("test", "alice");
-		Thread recieve = new Thread() {
+		Thread recieve1 = new Thread() {
             public void run() {
             	while(true){
+            		try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
             		Message msg = mp1.receive();
             		if(msg != null){
-            			System.out.println("Recieve in the application" + msg);
+            			System.out.println("Recieve in the application alice///" + msg);
             		}
             	}
             }
         };
-        recieve.start();
+        recieve1.start();
         
-        final MessagePasser mp2 = new MessagePasser("test", "bob");
-		Thread send = new Thread() {
+		Thread send1 = new Thread() {
             public void run() {
-                mp2.send(new Message("alice", "test", "testdata!!!!!"));
+            	while(true){
+	            	try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	                mp1.send(new Message("bob", "test", "testdata!!!!!"));
+            	}
             }
         };
-        send.start();
+        send1.start();
+        
+        
+        
+        
+        final MessagePasser mp2 = new MessagePasser("test", "bob");
+		Thread recieve2 = new Thread() {
+            public void run() {
+            	while(true){
+            		try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            		Message msg = mp2.receive();
+            		if(msg != null){
+            			System.out.println("Recieve in the application bob///" + msg);
+            		}
+            	}
+            }
+        };
+        recieve2.start();
+        
+
+		Thread send2 = new Thread() {
+            public void run() {
+            	while(true){
+	            	try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	                mp2.send(new Message("alice", "test", "testdata!!!!!"));
+            	}
+            }
+        };
+        send2.start();
         
         
 	}

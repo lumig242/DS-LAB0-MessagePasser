@@ -40,6 +40,10 @@ public class Message implements Serializable{
 	public void set_seqNum(int sequenceNumber){
 		this.sequenceNumber = sequenceNumber;
 	}
+
+	public String getKind() {
+		return kind;
+	}
 	
 	
 }
