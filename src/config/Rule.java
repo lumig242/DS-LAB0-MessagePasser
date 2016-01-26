@@ -1,4 +1,4 @@
-package lab0;
+package config;
 
 public class Rule{
 	private String action, src, dest, kind;

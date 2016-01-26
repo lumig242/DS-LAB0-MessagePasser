@@ -1,4 +1,4 @@
-package lab0;
+package config;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,6 +57,10 @@ public class ConfigParser {
 		return servers.get(serverName);
 	}
 	
+	/**
+	 * TO BE DONE
+	 * Check if the given message matches a rule
+	 */
 	public Rule matchSendRule(String src, String dest, String kind, int seqNum){
 		return matchRule(src, dest, kind, seqNum, sendRules);
 	}

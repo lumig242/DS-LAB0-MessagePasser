@@ -1,4 +1,4 @@
-package lab0;
+package config;
 
 import java.io.Serializable;
 

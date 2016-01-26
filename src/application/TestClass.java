@@ -1,8 +1,11 @@
-package lab0;
+package application;
+
+import config.Message;
+import core.MessagePasser;
 
 public class TestClass {
 	public static void main(String[] args){
-		final MessagePasser mp1 = new MessagePasser("test", "alice");
+		final MessagePasser mp1 = new MessagePasser("Configuration.yaml", "alice");
 		Thread recieve1 = new Thread() {
             public void run() {
             	while(true){
@@ -39,7 +42,7 @@ public class TestClass {
         
         
         
-        final MessagePasser mp2 = new MessagePasser("test", "bob");
+        final MessagePasser mp2 = new MessagePasser("Configuration.yaml", "bob");
 		Thread recieve2 = new Thread() {
             public void run() {
             	while(true){

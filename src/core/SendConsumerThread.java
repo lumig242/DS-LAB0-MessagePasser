@@ -1,8 +1,12 @@
-package lab0;
+package core;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import config.ConfigParser;
+import config.Message;
+import config.Server;
 
 /**
  * The consumer thread. It keeps fetching msgs stored in the send queue.

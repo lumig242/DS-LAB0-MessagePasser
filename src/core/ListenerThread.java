@@ -1,6 +1,9 @@
-package lab0;
+package core;
 
 import java.util.concurrent.LinkedBlockingQueue;
+
+import config.Message;
+import config.Server;
 
 /**
  * The listening server thread

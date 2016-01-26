@@ -1,10 +1,14 @@
-package lab0;
+package core;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import config.ConfigParser;
+import config.Message;
+import config.Server;
 
 /**
  * The main class
@@ -23,31 +27,40 @@ public class MessagePasser {
 		localServer = config.getServer(local_name);
 		
 		// Start the thread to keep listening on port
-		// Start separate thread for all the clients coonected
+		// Start separate thread for all the clients connected
 		Thread t = new Thread(new Runnable() {	
 			@SuppressWarnings("resource")
 			@Override
 			public void run() {
 				try {
-					ServerSocket server = new ServerSocket(localServer.getPort());
+					ServerSocket socket = new ServerSocket(localServer.getPort());
 					System.out.println("Listening on " + localServer);
 					Socket client = null;
 					while(true){
 						// Client connected
-						client = server.accept();  
+						client = socket.accept();  
 						// Set the input output stream for this node
 			        	ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
 			        	ObjectInputStream input = new ObjectInputStream(client.getInputStream());
 			        	// We have to read the first message to get the name of client
 			        	Message msg =  (Message) input.readObject();
-			        	Server s = config.getServer(msg.getSource());
-			        	System.out.println("Connected client!  " + s);
-	                	s.setOutput(output);
-						s.setInput(input);
+			        	Server server = config.getServer(msg.getSource());
+			        	System.out.println("Connected client!  " + server);
 						// Put the first message in the queue
 						receiveMsgs.put(msg);
-						// Start a new thread to listen from the node
-						new Thread(new ListenerThread(s, receiveMsgs)).start();
+						
+						/**
+						 * Trick thing here. To avoid race condition that two server are connecting to 
+						 * each other at the same time and thus construct two tcp connection
+						 * The node with a SMALLER name will not start the listening session
+						 */
+						if(!(server.getOutput() != null && server.getName().compareTo(msg.getSource()) > 0)){					
+							// Store the input, output stream
+		                	server.setOutput(output);
+							server.setInput(input);
+							// Start a new thread to listen from the node
+							new Thread(new ListenerThread(server, receiveMsgs)).start();
+						}
 					}
 				} catch (IOException | ClassNotFoundException | InterruptedException e) {
 					e.printStackTrace();
@@ -67,7 +80,7 @@ public class MessagePasser {
 	 * Put the message in the queue, acts as a producer
 	 * @param message
 	 */
-	void send(Message message){
+	public void send(Message message){
 		//message.set_seqNum(sequenceNumber++);
 		message.set_source(localServer.getName());
 		//System.out.println("Sent: " + message);
@@ -106,6 +119,7 @@ public class MessagePasser {
 			//System.out.println("No messages received!");
 			return null;
 		}
+		// May change this to receiveMsgs.take() to make it unblock
 		Message msg = receiveMsgs.poll();
 		return msg;
 	};
