@@ -57,7 +57,7 @@ public class MessagePasser {
 			        		// Put the first message in the queue
 			                System.out.println(msg + "receive");
 			                receiveMsgs.put(msg);
-			                System.out.println(receiveMsgs);
+			                //System.out.println(receiveMsgs);
 			                
 			                while(!delayReceiveMsgs.isEmpty()) {
 			                	receiveMsgs.put(delayReceiveMsgs.poll());
