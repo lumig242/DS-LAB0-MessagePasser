@@ -2,7 +2,7 @@ package config;
 
 public class Rule{
 	private String action, src, dest, kind;
-	private int seqNum;
+	private int seqNum = -1;
 	
 	@Override
 	public String toString() {
@@ -14,7 +14,6 @@ public class Rule{
 	};
 	
 	/**
-	 * To be finished
 	 * Judge if a rule matches the current message
 	 * @param src
 	 * @param dest
@@ -23,6 +22,30 @@ public class Rule{
 	 * @return
 	 */
 	public Boolean match(String src, String dest, String kind, int seqNum){
+		switch(action.toLowerCase()) {
+			case "drop" :
+			{
+				return (this.src == null || this.src.equals(src)) &&
+						(this.dest == null || this.dest.equals(dest)) &&
+						(this.kind == null || this.kind.equals(dest)) &&
+						(this.seqNum == -1 || this.seqNum == seqNum);
+			}
+			case "dropafter" :
+			{
+				return (this.src == null || this.src.equals(src)) &&
+						(this.dest == null || this.dest.equals(dest)) &&
+						(this.kind == null || this.kind.equals(dest)) &&
+						(this.seqNum == -1 || this.seqNum > seqNum);
+			}
+			case "delay" :
+			{
+				return (this.src == null || this.src.equals(src)) &&
+						(this.dest == null || this.dest.equals(dest)) &&
+						(this.kind == null || this.kind.equals(dest)) &&
+						(this.seqNum == -1 || this.seqNum == seqNum);
+			}
+		}
+		
 		return false;
 	}
 	

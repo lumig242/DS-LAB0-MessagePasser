@@ -32,6 +32,6 @@ sendRules :
     seqNum : 6
 receiveRules :
   - action : delay
-src : charlie
+    src    : charlie
 # Everyone sees two copies of charlie's messages
 # even though he only sends one

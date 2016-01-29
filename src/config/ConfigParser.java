@@ -31,7 +31,6 @@ public class ConfigParser {
 		try {
 			input = new FileInputStream(new File(filename));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
@@ -58,7 +57,6 @@ public class ConfigParser {
 	}
 	
 	/**
-	 * TO BE DONE
 	 * Check if the given message matches a rule
 	 */
 	public Rule matchSendRule(String src, String dest, String kind, int seqNum){

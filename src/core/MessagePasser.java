@@ -19,7 +19,7 @@ public class MessagePasser {
 	private Server localServer;
 	private LinkedBlockingQueue<Message> sendMsgs = new LinkedBlockingQueue<Message>();
 	private LinkedBlockingQueue<Message> receiveMsgs = new LinkedBlockingQueue<Message>();
-	ConfigParser config ;
+	ConfigParser config;
 	
 	public MessagePasser(String configuration_filename, String local_name){
 		// Parse the Yaml configuration file
@@ -28,7 +28,7 @@ public class MessagePasser {
 		
 		// Start the thread to keep listening on port
 		// Start separate thread for all the clients connected
-		Thread t = new Thread(new Runnable() {	
+		Thread t = new Thread(new Runnable() {
 			@SuppressWarnings("resource")
 			@Override
 			public void run() {
@@ -38,7 +38,7 @@ public class MessagePasser {
 					Socket client = null;
 					while(true){
 						// Client connected
-						client = socket.accept();  
+						client = socket.accept();
 						// Set the input output stream for this node
 			        	ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
 			        	ObjectInputStream input = new ObjectInputStream(client.getInputStream());
@@ -54,11 +54,12 @@ public class MessagePasser {
 						 * each other at the same time and thus construct two tcp connection
 						 * The node with a SMALLER name will not start the listening session
 						 */
-						if(!(server.getOutput() != null && server.getName().compareTo(msg.getSource()) > 0)){					
+						if(!(server.getOutput() != null && server.getName().compareTo(msg.getSource()) > 0)){
 							// Store the input, output stream
 		                	server.setOutput(output);
 							server.setInput(input);
 							// Start a new thread to listen from the node
+							// why use new Thread outside?																	???
 							new Thread(new ListenerThread(server, receiveMsgs)).start();
 						}
 					}
