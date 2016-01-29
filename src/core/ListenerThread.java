@@ -2,7 +2,9 @@ package core;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+import config.ConfigParser;
 import config.Message;
+import config.Rule;
 import config.Server;
 
 /**
@@ -13,10 +15,14 @@ import config.Server;
 public class ListenerThread implements Runnable {
     private Server server;
     LinkedBlockingQueue<Message> receiveMsgs = new LinkedBlockingQueue<Message>();
+    private LinkedBlockingQueue<Message> delayReceiveMsgs = new LinkedBlockingQueue<Message>();
+    ConfigParser config;
     
-    public ListenerThread(Server server, LinkedBlockingQueue<Message> receiveMsgs){  
+    public ListenerThread(Server server, LinkedBlockingQueue<Message> receiveMsgs, LinkedBlockingQueue<Message> delayReceiveMsgs, ConfigParser config){  
         this.server = server;  
         this.receiveMsgs = receiveMsgs;
+        this.delayReceiveMsgs = delayReceiveMsgs;
+        this.config = config;
     }
     
     /**
@@ -27,9 +33,25 @@ public class ListenerThread implements Runnable {
     	try{         	
             while(true){  
             	Message msg = (Message) server.getInput().readObject();
-                System.out.println(msg + "receive");
-                receiveMsgs.put(msg);
-                System.out.println(receiveMsgs);
+            	Rule rule = config.matchSendRule(msg.getSource(), msg.getDest(), msg.getKind(), msg.get_seqNum());
+            	if(rule==null) {
+	                System.out.println(msg + "receive");
+	                receiveMsgs.put(msg);
+	                System.out.println(receiveMsgs);
+	                
+	                while(!delayReceiveMsgs.isEmpty()) {
+	                	receiveMsgs.put(delayReceiveMsgs.poll());
+	                }
+            	} else {
+            		switch(rule.getKind().toLowerCase()) {
+            			case "drop" : {;}
+            			case "dropafter" : {;}
+            			case "delay" : {
+            				delayReceiveMsgs.put(msg);
+            			}
+            		}
+            	}
+                
             }    
         }catch(Exception e){  
             e.printStackTrace();  

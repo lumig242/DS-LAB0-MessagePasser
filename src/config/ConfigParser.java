@@ -25,7 +25,7 @@ public class ConfigParser {
 	
 	@SuppressWarnings("unchecked")
 	public ConfigParser(String filename){
-		this.filename = filename;
+		this.setFilename(filename);
 		Yaml yaml = new Yaml();
 		InputStream input;
 		try {
@@ -46,7 +46,7 @@ public class ConfigParser {
 	
 	/**
 	 * To be finished
-	 * Reconfiguration schema needed 
+	 * Reconfiguration schema needed
 	 */
 	public void Reconfiguration(){
 		
@@ -116,6 +116,14 @@ public class ConfigParser {
 			}
 			rules.add(rule);
 		}
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 	
 	

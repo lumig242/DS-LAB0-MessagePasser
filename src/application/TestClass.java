@@ -68,6 +68,7 @@ public class TestClass {
         };
         recieve1.start();
         
+
         try {
         	System.out.println("Waiting for all the nodes to be set!");
 			Thread.sleep(20000);
@@ -95,5 +96,6 @@ public class TestClass {
             }
         };
         send1.start();
+
 	}
 }
