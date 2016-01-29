@@ -22,6 +22,8 @@ public class ConfigParser {
 	private List<Rule> sendRules = new ArrayList<>();
 	private List<Rule> receiveRules = new ArrayList<>();
 	private String filename;
+	private static long CONFIG_FILE_LAST_MODIFIED;
+	private File configFile;
 	
 	@SuppressWarnings("unchecked")
 	public ConfigParser(String filename){
@@ -29,7 +31,9 @@ public class ConfigParser {
 		Yaml yaml = new Yaml();
 		InputStream input;
 		try {
-			input = new FileInputStream(new File(filename));
+			configFile = new File(filename);
+			CONFIG_FILE_LAST_MODIFIED = configFile.lastModified();
+			input = new FileInputStream(configFile);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return;
@@ -48,8 +52,30 @@ public class ConfigParser {
 	 * To be finished
 	 * Reconfiguration schema needed
 	 */
-	public void Reconfiguration(){
+	public void reconfiguration(){
+		Yaml yaml = new Yaml();
+		InputStream input;
+		try {
+			configFile = new File(filename);
+			CONFIG_FILE_LAST_MODIFIED = configFile.lastModified();
+			input = new FileInputStream(configFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return;
+		}
+		@SuppressWarnings("unchecked")
+		Map<String, List<Map<String, Object>>> values = (Map<String, List<Map<String, Object>>>) yaml.load(input);
+		parseRules(values.get("sendRules"), sendRules);
+		parseRules(values.get("receiveRules"), receiveRules);
 		
+		System.out.println("WARNING: CONFIG FILE RELOADED!");
+	}
+	
+	public boolean isUpToDate() {
+		if(configFile.lastModified() != CONFIG_FILE_LAST_MODIFIED) {
+			return false;
+		}
+		return true;
 	}
 	
 	public Server getServer(String serverName){

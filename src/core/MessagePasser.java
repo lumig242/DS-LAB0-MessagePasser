@@ -49,12 +49,15 @@ public class MessagePasser {
 			        	ObjectInputStream input = new ObjectInputStream(client.getInputStream());
 			        	// We have to read the first message to get the name of client
 			        	Message msg =  (Message) input.readObject();
+			        	if(!config.isUpToDate()) {
+							config.reconfiguration();
+						}
 			        	Rule rule = config.matchSendRule(msg.getSource(), msg.getDest(), msg.getKind(), msg.get_seqNum());
-			        	if(rule==null) {
+			        	if(rule == null) {
 			        		// Put the first message in the queue
-			                System.out.println(msg + "receive");
+			                //System.out.println(msg + "receive");
 			                receiveMsgs.put(msg);
-			                System.out.println(receiveMsgs);
+			                //System.out.println(receiveMsgs);
 			                
 			                while(!delayReceiveMsgs.isEmpty()) {
 			                	receiveMsgs.put(delayReceiveMsgs.poll());
@@ -130,6 +133,9 @@ public class MessagePasser {
 		// Put the msg into queue
 		try {
 			message.set_seqNum(sequenceNumber++);
+			if(!config.isUpToDate()) {
+				config.reconfiguration();
+			}
 			Rule rule = config.matchSendRule(message.getSource(), message.getDest(), message.getKind(), message.get_seqNum());
 			
 			if(rule == null) {

@@ -43,12 +43,11 @@ public class SendConsumerThread implements Runnable {
 				//send
 				outputStream.writeObject(msg);
 				outputStream.flush();
-				System.out.println(msg + "sent!");
+				//System.out.println(msg + "sent!");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	
 		}
 	}	
 }

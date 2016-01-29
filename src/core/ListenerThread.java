@@ -30,14 +30,17 @@ public class ListenerThread implements Runnable {
      */
     @Override  
     public void run() {  
-    	try{         	
+    	try{
             while(true){  
             	Message msg = (Message) server.getInput().readObject();
+            	if(!config.isUpToDate()) {
+    				config.reconfiguration();
+    			}
             	Rule rule = config.matchSendRule(msg.getSource(), msg.getDest(), msg.getKind(), msg.get_seqNum());
-            	if(rule==null) {
-	                System.out.println(msg + "receive");
+            	if(rule == null) {
+	                //System.out.println(msg + "receive");
 	                receiveMsgs.put(msg);
-	                System.out.println(receiveMsgs);
+	                //System.out.println(receiveMsgs);
 	                
 	                while(!delayReceiveMsgs.isEmpty()) {
 	                	receiveMsgs.put(delayReceiveMsgs.poll());
