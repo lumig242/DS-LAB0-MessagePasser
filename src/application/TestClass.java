@@ -80,20 +80,18 @@ public class TestClass {
         // Sender thread
 		Thread send1 = new Thread() {
             public void run() {
-            	while(true){
-            		for(int i = 0; i < limit; i++){
-            			for(Message msg: sendMessages){
-			            	try {
-								Thread.sleep(2000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-			                mp.send(msg);
-            			}
-            		}
-            	}
-            }
+        		for(int i = 0; i < limit; i++){
+        			for(Message msg: sendMessages){
+		            	try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		                mp.send(msg);
+        			}
+        		}
+        	}
         };
         send1.start();
 
