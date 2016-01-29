@@ -39,9 +39,6 @@ public class TestClass {
         };
         send1.start();
         
-        
-        
-        
         final MessagePasser mp2 = new MessagePasser("Configuration.yaml", "bob");
 		Thread recieve2 = new Thread() {
             public void run() {
@@ -60,7 +57,6 @@ public class TestClass {
             }
         };
         recieve2.start();
-        
 
 		Thread send2 = new Thread() {
             public void run() {
@@ -76,7 +72,5 @@ public class TestClass {
             }
         };
         send2.start();
-        
-        
 	}
 }

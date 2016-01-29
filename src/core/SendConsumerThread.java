@@ -48,7 +48,6 @@ public class SendConsumerThread implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	
 		}
 	}	
 }
