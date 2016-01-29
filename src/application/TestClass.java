@@ -45,7 +45,7 @@ public class TestClass {
 			sendMessages.add(new Message(msg.get("dest"), msg.get("kind"), msg.get("data")));
 		}
 		// Get all the messages to send
-		System.out.println(sendMessages);
+		// System.out.println(sendMessages);
 		
 		// Start the application
 		// Receiver thread
@@ -71,7 +71,7 @@ public class TestClass {
 
         try {
         	System.out.println("Waiting for all the nodes to be set!");
-			Thread.sleep(20000);
+			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,6 +89,7 @@ public class TestClass {
 							e.printStackTrace();
 						}
 		                mp.send(msg);
+		                System.out.println("Sent Message: " + msg);
         			}
         		}
         	}

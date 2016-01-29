@@ -23,15 +23,15 @@ configuration :
 sendRules :
   - action : drop # Ack message number 4 from bob to alice will not be sent
     src    : bob
-    dest   : alice
+    dest   : a
     kind   : Ack
     seqNum : 4
   - action : dropAfter # Daphnie will stop sending Reply messages after seq#6
     kind   : Reply
-    src    : daphnie
+    src    : a
     seqNum : 6
 receiveRules :
   - action : delay
-    src    : charlie
+    src    : a
 # Everyone sees two copies of charlie's messages
 # even though he only sends one

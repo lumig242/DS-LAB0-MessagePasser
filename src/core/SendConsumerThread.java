@@ -25,7 +25,7 @@ public class SendConsumerThread implements Runnable {
 	@Override
 	public void run() {
 		while(true){
-			//System.out.println("Send Consumer" + sendMsgs);
+			System.out.println("=======Send Consumer===========" + sendMsgs);
 			// Sleep for seconds if no msgs in the queue
 			if(sendMsgs.isEmpty()){
 				try {
@@ -43,7 +43,6 @@ public class SendConsumerThread implements Runnable {
 				//send
 				outputStream.writeObject(msg);
 				outputStream.flush();
-				//System.out.println(msg + "sent!");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

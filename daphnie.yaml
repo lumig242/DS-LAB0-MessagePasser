@@ -11,10 +11,10 @@ name :
 send :
   - dest   : alice
     data   : hi
-    kind   : reply
+    kind   : k
   - dest   : bob
     data   : hi
-    kind   : reply  
+    kind   : k  
   - dest   : charlie
     data   : hi
-    kind   : reply
+    kind   : k

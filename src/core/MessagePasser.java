@@ -64,8 +64,8 @@ public class MessagePasser {
 			                }
 		            	} else {
 		            		switch(rule.getKind().toLowerCase()) {
-		            			case "drop" : {;}
-		            			case "dropafter" : {;}
+		            			case "drop" : {break;}
+		            			case "dropafter" : {break;}
 		            			case "delay" : {
 		            				delayReceiveMsgs.put(msg);
 		            			}
@@ -80,7 +80,8 @@ public class MessagePasser {
 						 * The node with a SMALLER name will not start the listening session
 						 */
 						if(!(server.getOutput() != null && server.getName().compareTo(msg.getSource()) > 0)){
-							// Store the input, output stream
+			        	//if(!(server.getOutput() != null)){	
+			        		// Store the input, output stream
 		                	server.setOutput(output);
 							server.setInput(input);
 							// Start a new thread to listen from the node
@@ -137,7 +138,7 @@ public class MessagePasser {
 				config.reconfiguration();
 			}
 			Rule rule = config.matchSendRule(message.getSource(), message.getDest(), message.getKind(), message.get_seqNum());
-			
+			//System.out.println("Rule:" + rule);
 			if(rule == null) {
 				sendMsgs.put(message);
 				//all delayed messages are triggered to send
@@ -165,8 +166,16 @@ public class MessagePasser {
 			//System.out.println("No messages received!");
 			return null;
 		}
+		Message msg;
 		// May change this to receiveMsgs.take() to make it unblock
-		Message msg = receiveMsgs.poll();
-		return msg;
+		try {
+			msg = receiveMsgs.take();
+			//System.out.println(receiveMsgs);
+			return msg;
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	};
 }

@@ -38,17 +38,14 @@ public class ListenerThread implements Runnable {
     			}
             	Rule rule = config.matchSendRule(msg.getSource(), msg.getDest(), msg.getKind(), msg.get_seqNum());
             	if(rule == null) {
-	                //System.out.println(msg + "receive");
 	                receiveMsgs.put(msg);
-	                //System.out.println(receiveMsgs);
-	                
 	                while(!delayReceiveMsgs.isEmpty()) {
 	                	receiveMsgs.put(delayReceiveMsgs.poll());
 	                }
             	} else {
             		switch(rule.getKind().toLowerCase()) {
-            			case "drop" : {;}
-            			case "dropafter" : {;}
+            			case "drop" : {break;}
+            			case "dropafter" : {break;}
             			case "delay" : {
             				delayReceiveMsgs.put(msg);
             			}
