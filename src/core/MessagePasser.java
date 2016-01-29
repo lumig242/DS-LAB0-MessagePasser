@@ -8,6 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import config.ConfigParser;
 import config.Message;
+import config.Rule;
 import config.Server;
 
 /**
@@ -18,8 +19,12 @@ import config.Server;
 public class MessagePasser {
 	private Server localServer;
 	private LinkedBlockingQueue<Message> sendMsgs = new LinkedBlockingQueue<Message>();
+	private LinkedBlockingQueue<Message> delaySendMsgs = new LinkedBlockingQueue<Message>();
 	private LinkedBlockingQueue<Message> receiveMsgs = new LinkedBlockingQueue<Message>();
+	private LinkedBlockingQueue<Message> delayReceiveMsgs = new LinkedBlockingQueue<Message>();
+
 	ConfigParser config;
+	private int sequenceNumber = 0;
 	
 	public MessagePasser(String configuration_filename, String local_name){
 		// Parse the Yaml configuration file
@@ -44,10 +49,27 @@ public class MessagePasser {
 			        	ObjectInputStream input = new ObjectInputStream(client.getInputStream());
 			        	// We have to read the first message to get the name of client
 			        	Message msg =  (Message) input.readObject();
+			        	Rule rule = config.matchSendRule(msg.getSource(), msg.getDest(), msg.getKind(), msg.get_seqNum());
+			        	if(rule==null) {
+			        		// Put the first message in the queue
+			                System.out.println(msg + "receive");
+			                receiveMsgs.put(msg);
+			                System.out.println(receiveMsgs);
+			                
+			                while(!delayReceiveMsgs.isEmpty()) {
+			                	receiveMsgs.put(delayReceiveMsgs.poll());
+			                }
+		            	} else {
+		            		switch(rule.getKind().toLowerCase()) {
+		            			case "drop" : {;}
+		            			case "dropafter" : {;}
+		            			case "delay" : {
+		            				delayReceiveMsgs.put(msg);
+		            			}
+		            		}
+		            	}
 			        	Server server = config.getServer(msg.getSource());
 			        	System.out.println("Connected client!  " + server);
-						// Put the first message in the queue
-						receiveMsgs.put(msg);
 						
 						/**
 						 * Trick thing here. To avoid race condition that two server are connecting to 
@@ -59,8 +81,7 @@ public class MessagePasser {
 		                	server.setOutput(output);
 							server.setInput(input);
 							// Start a new thread to listen from the node
-							// why use new Thread outside?																	???
-							new Thread(new ListenerThread(server, receiveMsgs)).start();
+							new Thread(new ListenerThread(server, receiveMsgs, delayReceiveMsgs, config)).start();
 						}
 					}
 				} catch (IOException | ClassNotFoundException | InterruptedException e) {
@@ -82,7 +103,7 @@ public class MessagePasser {
 	 * @param message
 	 */
 	public void send(Message message){
-		//message.set_seqNum(sequenceNumber++);
+		
 		message.set_source(localServer.getName());
 		//System.out.println("Sent: " + message);
 		Server destServer = config.getServer(message.getDest());
@@ -90,6 +111,7 @@ public class MessagePasser {
 		
 		// if this is the first msg sent
 		// act as the client
+		// create a new TCP connection
 		if(destServer.getOutput() == null){
 			try {
 				System.out.println("Connect to Destserver: " + destServer);
@@ -99,18 +121,35 @@ public class MessagePasser {
 				ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
 				destServer.setInput(inputStream);
 				destServer.setOutput(outputStream);
-				new Thread(new ListenerThread(destServer, receiveMsgs)).start();
-			} catch (IOException e) {				
+				new Thread(new ListenerThread(destServer, receiveMsgs, delayReceiveMsgs, config)).start();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		
 		// Put the msg into queue
 		try {
-			sendMsgs.put(message);
-			//System.out.println("Message Passer" + sendMsgs);
+			message.set_seqNum(sequenceNumber++);
+			Rule rule = config.matchSendRule(message.getSource(), message.getDest(), message.getKind(), message.get_seqNum());
+			
+			if(rule == null) {
+				sendMsgs.put(message);
+				//all delayed messages are triggered to send
+				while(!delaySendMsgs.isEmpty()) {
+					sendMsgs.put(delaySendMsgs.poll());
+				}
+			} else {
+				switch(rule.getKind().toLowerCase()) {
+				    case "drop" :{return;}
+				    case "dropafter" :{return;}
+				    case "delay" :
+				    {
+				    	delaySendMsgs.put(message);
+				    	break;
+				    }
+				}
+			}
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

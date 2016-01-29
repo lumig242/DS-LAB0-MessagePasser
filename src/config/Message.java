@@ -67,13 +67,13 @@ public class Message implements Serializable{
 		private String dest;
 		private String source;
 		private String kind;
-		private int seq;
+		private int sequenceNumber;
 		private boolean duplicate = false;
 		
 		public Header(String dest, String kind) {
 			this.setDest(dest);
 			this.setKind(kind);
-			this.setSeq(seq);
+			this.setSeq(sequenceNumber);
 		}
 
 		public String getDest() {
@@ -101,11 +101,11 @@ public class Message implements Serializable{
 		}
 
 		public int getSeq() {
-			return seq;
+			return sequenceNumber;
 		}
 
 		public void setSeq(int seq) {
-			this.seq = seq;
+			this.sequenceNumber = seq;
 		}
 		
 		public boolean isDuplicate() {

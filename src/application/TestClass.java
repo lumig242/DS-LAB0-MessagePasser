@@ -33,7 +33,7 @@ public class TestClass {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-	                mp1.send(new Message("bob", "test", "testdata!!!!!"));
+	                mp1.send(new Message("bob", "ACK", "testdata!!!!!"));
             	}
             }
         };
@@ -71,7 +71,7 @@ public class TestClass {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-	                mp2.send(new Message("alice", "test", "testdata!!!!!"));
+	                mp2.send(new Message("alice", "Reply", "testdata!!!!!"));
             	}
             }
         };
