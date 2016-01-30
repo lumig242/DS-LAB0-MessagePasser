@@ -15,6 +15,7 @@ public class Message implements Serializable{
 		return "Message " +  header.getSeq() +
 			   " dest@" + header.getDest() + 
 			   " source@" + header.getSource() +
+			   " kind@" + this.getKind() + 
 			   " data@" + payload;
 	};
 	

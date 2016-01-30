@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -80,7 +81,8 @@ public class TestClass {
         // Sender thread
 		Thread send1 = new Thread() {
             public void run() {
-        		for(int i = 0; i < limit; i++){
+        		/*
+            	for(int i = 0; i < limit; i++){
         			for(Message msg: sendMessages){
 		            	try {
 							Thread.sleep(2000);
@@ -91,10 +93,30 @@ public class TestClass {
 		                mp.send(msg);
 		                System.out.println("Sent Message: " + msg);
         			}
-        		}
-        	}
+        		}*/
+            	while(true){
+	            	Scanner sc = new Scanner(System.in);
+	            	String[] line = sc.nextLine().split(" ");
+	            	if(line.length < 2){
+	            		System.out.println("Not enough arguments!");
+	            		continue;
+	            	}
+	            	StringBuffer buffer = new StringBuffer();
+	            	for(int i = 2; i< line.length; i++){
+	            		buffer.append(" ");
+	            		buffer.append(line[i]);
+	            	}
+	            	Message msg = new Message(line[0], line[1], buffer.toString());
+	            	mp.send(msg);
+	            	System.out.println("Sent Message: " + msg);
+            	}
+            }
         };
         send1.start();
 
+	}
+	
+	public static void print_help(){
+		System.out.println("Usage: [destination] [kind] [message_content]");
 	}
 }

@@ -25,11 +25,10 @@ public class SendConsumerThread implements Runnable {
 	@Override
 	public void run() {
 		while(true){
-			System.out.println("=======Send Consumer===========" + sendMsgs);
 			// Sleep for seconds if no msgs in the queue
 			if(sendMsgs.isEmpty()){
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(200);
 					continue;
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block

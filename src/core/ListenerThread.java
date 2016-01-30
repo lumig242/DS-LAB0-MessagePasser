@@ -36,14 +36,14 @@ public class ListenerThread implements Runnable {
             	if(!config.isUpToDate()) {
     				config.reconfiguration();
     			}
-            	Rule rule = config.matchSendRule(msg.getSource(), msg.getDest(), msg.getKind(), msg.get_seqNum());
+            	Rule rule = config.matchReceiveRule(msg.getSource(), msg.getDest(), msg.getKind(), msg.get_seqNum());
             	if(rule == null) {
 	                receiveMsgs.put(msg);
 	                while(!delayReceiveMsgs.isEmpty()) {
 	                	receiveMsgs.put(delayReceiveMsgs.poll());
 	                }
             	} else {
-            		switch(rule.getKind().toLowerCase()) {
+            		switch(rule.getAction().toLowerCase()) {
             			case "drop" : {break;}
             			case "dropafter" : {break;}
             			case "delay" : {

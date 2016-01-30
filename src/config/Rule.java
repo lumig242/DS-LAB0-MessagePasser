@@ -27,21 +27,21 @@ public class Rule{
 			{
 				return (this.src == null || this.src.equals(src)) &&
 						(this.dest == null || this.dest.equals(dest)) &&
-						(this.kind == null || this.kind.equals(dest)) &&
+						(this.kind == null || this.kind.equals(kind)) &&
 						(this.seqNum == -1 || this.seqNum == seqNum);
 			}
 			case "dropafter" :
 			{
 				return (this.src == null || this.src.equals(src)) &&
 						(this.dest == null || this.dest.equals(dest)) &&
-						(this.kind == null || this.kind.equals(dest)) &&
-						(this.seqNum == -1 || this.seqNum > seqNum);
+						(this.kind == null || this.kind.equals(kind)) &&
+						(this.seqNum == -1 || this.seqNum < seqNum);
 			}
 			case "delay" :
 			{
 				return (this.src == null || this.src.equals(src)) &&
 						(this.dest == null || this.dest.equals(dest)) &&
-						(this.kind == null || this.kind.equals(dest)) &&
+						(this.kind == null || this.kind.equals(kind)) &&
 						(this.seqNum == -1 || this.seqNum == seqNum);
 			}
 		}

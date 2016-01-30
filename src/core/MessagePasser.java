@@ -52,7 +52,7 @@ public class MessagePasser {
 			        	if(!config.isUpToDate()) {
 							config.reconfiguration();
 						}
-			        	Rule rule = config.matchSendRule(msg.getSource(), msg.getDest(), msg.getKind(), msg.get_seqNum());
+			        	Rule rule = config.matchReceiveRule(msg.getSource(), msg.getDest(), msg.getKind(), msg.get_seqNum());
 			        	if(rule == null) {
 			        		// Put the first message in the queue
 			                //System.out.println(msg + "receive");
@@ -63,7 +63,7 @@ public class MessagePasser {
 			                	receiveMsgs.put(delayReceiveMsgs.poll());
 			                }
 		            	} else {
-		            		switch(rule.getKind().toLowerCase()) {
+		            		switch(rule.getAction().toLowerCase()) {
 		            			case "drop" : {break;}
 		            			case "dropafter" : {break;}
 		            			case "delay" : {
@@ -146,7 +146,7 @@ public class MessagePasser {
 					sendMsgs.put(delaySendMsgs.poll());
 				}
 			} else {
-				switch(rule.getKind().toLowerCase()) {
+				switch(rule.getAction().toLowerCase()) {
 				    case "drop" :{return;}
 				    case "dropafter" :{return;}
 				    case "delay" :
