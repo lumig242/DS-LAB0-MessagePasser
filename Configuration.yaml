@@ -21,17 +21,10 @@ configuration :
 # This is the incoming port on which MP will listen
 # May be changed for further communication as usual
 sendRules :
-  - action : drop # Ack message number 4 from bob to alice will not be sent
-    src    : ce
-    dest   : b
-  - action : delay # Daphnie will stop sending Reply messages after seq#6
-    kind   : Reply
+  - action : dropAfter
     src    : alice
-    dest   : bob
-    seqNum : 6
+    seqNum : 4
 receiveRules :
-  - action : drop
-    src    : alice
-    dest   : charlie
-# Everyone sees two copies of charlie's messages
-# even though he only sends one
+  - action : dropAfter
+    dest   : daphnie
+    seqNum : 4
